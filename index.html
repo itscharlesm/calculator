@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cute Calculator 💕</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="css/images/logo.png">
+</head>
+
+<body>
+    <!-- Developed by GrabCharles -->
+
+    <!-- Modal Button -->
+    <button class="cute-btn" id="hiBtn">💌</button>
+
+    <!-- Modal -->
+    <div class="modal" id="hiModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Hi there! 🌸</h2>
+            <p>Have a lovely day! You're doing amazing 💖</p>
+        </div>
+    </div>
+
+    <!-- Calculator Container -->
+    <div class="calculator">
+        <div class="display">
+            <input type="text" id="result" readonly>
+        </div>
+
+        <div class="buttons">
+            <button class="btn func" onclick="clearAll()">AC</button>
+            <button class="btn func" onclick="clearOne()">C</button>
+            <button class="btn op" onclick="append('/')">÷</button>
+            <button class="btn op" onclick="append('*')">×</button>
+
+            <button class="btn" onclick="append('7')">7</button>
+            <button class="btn" onclick="append('8')">8</button>
+            <button class="btn" onclick="append('9')">9</button>
+            <button class="btn op" onclick="append('-')">−</button>
+
+            <button class="btn" onclick="append('4')">4</button>
+            <button class="btn" onclick="append('5')">5</button>
+            <button class="btn" onclick="append('6')">6</button>
+            <button class="btn op" onclick="append('+')">+</button>
+
+            <button class="btn" onclick="append('1')">1</button>
+            <button class="btn" onclick="append('2')">2</button>
+            <button class="btn" onclick="append('3')">3</button>
+            <button class="btn equal" onclick="calculate()">=</button>
+
+            <button class="btn zero" onclick="append('0')">0</button>
+            <button class="btn" onclick="append('.')">.</button>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="js/index.js"></script>
+</body>
+
+</html>
