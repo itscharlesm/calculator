@@ -31,6 +31,14 @@ function clearAll() {
 function clearOne() {
     result.value = result.value.slice(0, -1);
 
+    // Stop any playing audio first
+    document.querySelectorAll('audio').forEach(audio => {
+        if (!audio.paused) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    });
+
     // Show message if power is ON
     if (powerOn) {
         showMessage("Good morning my Iah! How are you? I hope you're doing well 💖");
@@ -50,7 +58,7 @@ function calculate() {
         // If power is ON and it's an addition, show message + play sound,
         // but DO NOT show the result
         if (powerOn && isAddition) {
-            showMessage("Surprise, this is for you 💝");
+            showMessage("STRESSED when spelled backward is DESSERTS, stressed diay ka ron? tara let's grab an ice cream or we eat cakes together?");
 
             // Stop any playing audio first
             document.querySelectorAll('audio').forEach(audio => {
@@ -61,9 +69,9 @@ function calculate() {
             });
 
             // Play the Christmas sound
-            const christmasAudio = document.getElementById('christmasSound');
-            christmasAudio.currentTime = 0;
-            christmasAudio.play().catch(err => console.log("Christmas sound failed:", err));
+            const stressedAudio = document.getElementById('stressedFunctionSound');
+            stressedAudio.currentTime = 0;
+            stressedAudio.play().catch(err => console.log("Sound failed:", err));
 
             // Keep the screen blank (no result shown)
             result.value = '';
@@ -157,12 +165,20 @@ powerBtn.addEventListener('click', () => {
     powerOn = !powerOn;
     powerBtn.classList.toggle('on', powerOn);
     powerBtn.textContent = powerOn ? '🟢' : '🔴';
+
+    if (powerOn) {
+        // When turned ON — clear the display
+        result.value = '';
+    } else {
+        // When turned OFF — clear everything
+        clearAll();
+    }
 });
 
 // Function to show sliding message
 function showMessage(text) {
     const container = document.getElementById('messageContainer');
-    const audio = document.getElementById('ayaSound');
+    const audio = document.getElementById('mainFunctionSound');
 
     container.innerHTML = ''; // clear any previous message
 
