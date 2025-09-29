@@ -33,16 +33,17 @@ window.onclick = (event) => {
 
 // Carousel Logic (New: Swipes and Dots)
 let currentIndex = 1;
-const totalSlides = 3;
 const slidesContainer = document.querySelector('.slides-container');
+const slides = document.querySelectorAll('.slide');
 const dots = document.querySelectorAll('.dot');
+const totalSlides = slides.length;
 
 let startX = 0;
 let currentX = 0;
 
 // Function to update carousel position and active states
 function updateCarousel() {
-    const translateX = - (currentIndex * (100 / totalSlides));
+    const translateX = - (currentIndex * 100);
     slidesContainer.style.transform = `translateX(${translateX}%)`;
 
     // Update active dot

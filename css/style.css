@@ -86,20 +86,14 @@ body {
 .slides-container {
     display: flex;
     transition: transform 0.3s ease;
-    width: 300%;
-    /* 3 slides */
     height: 150px;
 }
 
 .slide {
-    flex: 0 0 33.333%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    box-sizing: border-box;
+    flex: 0 0 100%;
+    /* Each slide takes full width of wrapper */
 }
+
 
 .slide h2 {
     font-size: 1.8em;
