@@ -5,7 +5,26 @@ function append(value) {
 }
 
 function clearAll() {
+    // Clear calculator display
     result.value = '';
+
+    // Stop and clear message
+    const container = document.getElementById('messageContainer');
+    if (container) {
+        container.innerHTML = '';
+    }
+
+    // Stop audio if playing
+    const audio = document.getElementById('ayaSound');
+    if (audio && !audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    // Turn OFF power
+    powerOn = false;
+    powerBtn.classList.remove('on');
+    powerBtn.textContent = '🔴';
 }
 
 function clearOne() {
