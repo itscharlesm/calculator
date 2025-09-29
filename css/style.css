@@ -31,6 +31,22 @@ body {
     color: white;
 }
 
+/* Power Button (top-right corner) */
+.power-btn {
+    top: 15px;
+    left: auto;
+    right: 15px;
+    background-color: #ffe6e6;
+    border: 2px solid #ff4d4d;
+    color: #ff4d4d;
+}
+
+.power-btn.on {
+    background-color: #e6ffe6;
+    border: 2px solid #00c853;
+    color: #00c853;
+}
+
 /* Modal Styling */
 .modal {
     display: none;
@@ -135,6 +151,12 @@ body {
     text-align: center;
 }
 
+/* Input Wrapper for LCD Message Overlay */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
 .display input {
     width: 100%;
     height: 60px;
@@ -188,4 +210,35 @@ body {
 
 .btn.zero {
     grid-column: span 2;
+}
+
+/* Message slides inside the calculator display */
+.message-container {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    width: calc(100% - 20px);
+    overflow: hidden;
+    height: 1.2em;
+    pointer-events: none;
+}
+
+.message-container span {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 0.9em;
+    color: #ff69b4;
+    font-weight: bold;
+    animation: slide-left 10s linear forwards;
+}
+
+@keyframes slide-left {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
 }

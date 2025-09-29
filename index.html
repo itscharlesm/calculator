@@ -20,6 +20,7 @@
     <!-- Developed by GrabCharles -->
     <!-- Modal Button -->
     <button class="cute-btn" id="hiBtn">📋</button>
+    <button class="cute-btn power-btn" id="powerBtn">🔴</button>
 
     <!-- Modal -->
     <div class="modal" id="hiModal">
@@ -112,7 +113,10 @@
     <!-- Calculator Container -->
     <div class="calculator">
         <div class="display">
-            <input type="text" id="result" readonly>
+            <div class="input-wrapper">
+                <input type="text" id="result" readonly>
+                <div class="message-container" id="messageContainer"></div>
+            </div>
         </div>
 
         <div class="buttons">
@@ -140,6 +144,8 @@
             <button class="btn" onclick="append('.')">.</button>
         </div>
     </div>
+
+    <audio id="ayaSound" src="css/sounds/aya.mp3" preload="auto"></audio>
 
     <!-- JS -->
     <script src="js/index.js"></script>

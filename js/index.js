@@ -10,6 +10,11 @@ function clearAll() {
 
 function clearOne() {
     result.value = result.value.slice(0, -1);
+
+    // Show message if power is ON
+    if (powerOn) {
+        showMessage("Good morning my Iah! How are you? I hope you're doing well 💖");
+    }
 }
 
 function calculate() {
@@ -92,3 +97,40 @@ dots.forEach((dot, index) => {
 
 // Initialize carousel on load (optional, but ensures it's set)
 updateCarousel();
+
+// Power Toggle Logic
+const powerBtn = document.getElementById('powerBtn');
+let powerOn = false;
+
+powerBtn.addEventListener('click', () => {
+    powerOn = !powerOn;
+    powerBtn.classList.toggle('on', powerOn);
+    powerBtn.textContent = powerOn ? '🟢' : '🔴';
+});
+
+// Function to show sliding message
+function showMessage(text) {
+    const container = document.getElementById('messageContainer');
+    const audio = document.getElementById('ayaSound');
+
+    container.innerHTML = ''; // clear any previous message
+
+    const msg = document.createElement('span');
+    msg.textContent = text;
+    container.appendChild(msg);
+
+    // Play Aya sound
+    if (audio) {
+        audio.currentTime = 0; // restart from beginning
+        audio.play().catch(err => {
+            console.log("Audio playback failed:", err);
+        });
+    }
+
+    // Restart animation on loop
+    msg.addEventListener('animationend', () => {
+        msg.style.animation = 'none';
+        void msg.offsetWidth; // reflow to restart
+        msg.style.animation = 'slide-left 10s linear forwards';
+    });
+}
