@@ -14,12 +14,13 @@ function clearAll() {
         container.innerHTML = '';
     }
 
-    // Stop audio if playing
-    const audio = document.getElementById('ayaSound');
-    if (audio && !audio.paused) {
-        audio.pause();
-        audio.currentTime = 0;
-    }
+    // Stop ANY playing audio
+    document.querySelectorAll('audio').forEach(audio => {
+        if (!audio.paused) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    });
 
     // Turn OFF power
     powerOn = false;
@@ -38,7 +39,38 @@ function clearOne() {
 
 function calculate() {
     try {
-        result.value = eval(result.value) || '';
+        const expression = result.value.trim();
+
+        // Check if it's an addition equation
+        const isAddition = /^[\d\s.]+\+[\d\s.]+$/.test(expression);
+
+        // Evaluate result first (in case we need it)
+        const computed = eval(expression) || '';
+
+        // If power is ON and it's an addition, show message + play sound,
+        // but DO NOT show the result
+        if (powerOn && isAddition) {
+            showMessage("Surprise, this is for you 💝");
+
+            // Stop any playing audio first
+            document.querySelectorAll('audio').forEach(audio => {
+                if (!audio.paused) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+
+            // Play the Christmas sound
+            const christmasAudio = document.getElementById('christmasSound');
+            christmasAudio.currentTime = 0;
+            christmasAudio.play().catch(err => console.log("Christmas sound failed:", err));
+
+            // Keep the screen blank (no result shown)
+            result.value = '';
+        } else {
+            // If power is OFF or not addition, show normal calculation
+            result.value = computed;
+        }
     } catch {
         result.value = 'Error';
     }
