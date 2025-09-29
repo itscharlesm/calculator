@@ -1,4 +1,6 @@
 const result = document.getElementById('result');
+const powerBtn = document.getElementById('powerBtn');
+let powerOn = false;
 
 function append(value) {
     result.value += value;
@@ -49,18 +51,52 @@ function calculate() {
     try {
         const expression = result.value.trim();
 
-        // Check if it's an addition equation
+        // Check if it's an addition or subtraction equation
         const isAddition = /^[\d\s.]+\+[\d\s.]+$/.test(expression);
+        const isSubtraction = /^[\d\s.]+-[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
 
-        // Evaluate result first (in case we need it)
+        // Evaluate result first
         const computed = eval(expression) || '';
 
-        // If power is ON and it's an addition, show message + play sound,
-        // but DO NOT show the result
-        if (powerOn && isAddition) {
-            showMessage("STRESSED when spelled backward is DESSERTS, stressed diay ka ron? tara let's grab an ice cream or we eat cakes together?");
+        // Helper: plays message with animation + optional sound
+        function animatedMessage(text, audioId) {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = '';
 
-            // Stop any playing audio first
+            const msg = document.createElement('span');
+            msg.textContent = text;
+            container.appendChild(msg);
+
+            // Wait for the element to be rendered to get accurate width
+            requestAnimationFrame(() => {
+                const msgWidth = msg.offsetWidth;
+                const containerWidth = container.offsetWidth;
+                const distance = msgWidth + containerWidth;
+
+                const speed = 50; // pixels per second, adjust as needed
+                const duration = distance / speed; // seconds
+
+                msg.style.animation = `slide-left ${duration}s linear forwards`;
+
+                // Restart animation on end
+                msg.addEventListener('animationend', () => {
+                    msg.style.animation = 'none';
+                    void msg.offsetWidth; // trigger reflow
+                    msg.style.animation = `slide-left ${duration}s linear forwards`;
+                });
+            });
+
+            // Play the sound
+            const audio = document.getElementById(audioId);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(err => console.log("Sound failed:", err));
+            }
+        }
+
+        // If power is ON and it's an addition
+        if (powerOn && isAddition) {
+            // Stop any playing audio
             document.querySelectorAll('audio').forEach(audio => {
                 if (!audio.paused) {
                     audio.pause();
@@ -68,17 +104,39 @@ function calculate() {
                 }
             });
 
-            // Play the Christmas sound
-            const stressedAudio = document.getElementById('stressedFunctionSound');
-            stressedAudio.currentTime = 0;
-            stressedAudio.play().catch(err => console.log("Sound failed:", err));
+            // Show animated message + play audio
+            animatedMessage(
+                "STRESSED when spelled backward is DESSERTS, stressed diay ka ron? tara let's grab an ice cream or we eat cakes together?",
+                'stressedFunctionSound'
+            );
 
-            // Keep the screen blank (no result shown)
+            // Keep result hidden
             result.value = '';
-        } else {
-            // If power is OFF or not addition, show normal calculation
+
+            // If power is ON and it's a subtraction
+        } else if (powerOn && isSubtraction) {
+            // Stop any playing audio
+            document.querySelectorAll('audio').forEach(audio => {
+                if (!audio.paused) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+
+            // Show animated message + play audio
+            animatedMessage(
+                "Need a fresh air? Tara iaaah, jog taaa? Or if di ka gusto ug sington ka or kapuyan ka, we can go outside pahangin ta sakay ka saako kay nagi, dalhon taka duol sa nature, and don't worry safe ka with me.",
+                'overwhelmedFunctionSound'
+            );
+
+            // Keep result hidden
+            result.value = '';
+        }
+        else {
+            // Normal calculation behavior
             result.value = computed;
         }
+
     } catch {
         result.value = 'Error';
     }
@@ -115,8 +173,8 @@ function updateCarousel() {
         dot.classList.toggle('active', index === currentIndex);
     });
 
-    // Optional: Update active slide class if needed for additional styling
-    document.querySelectorAll('.slide').forEach((slide, index) => {
+    // Update active slide class for styling
+    slides.forEach((slide, index) => {
         slide.classList.toggle('active', index === currentIndex);
     });
 }
@@ -124,16 +182,26 @@ function updateCarousel() {
 // Swipe Event Listeners
 slidesContainer.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
+    // console.log('touchstart', startX);
 });
 
 slidesContainer.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // Prevent page scroll during swipe
+    if (!e.touches || e.touches.length === 0) return;
+
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - startX;
+
+    // Only prevent default if horizontal swipe is significant
+    if (Math.abs(deltaX) > 10) {
+        e.preventDefault();
+    }
 });
 
 slidesContainer.addEventListener('touchend', (e) => {
     if (!e.changedTouches || e.changedTouches.length === 0) return;
     currentX = e.changedTouches[0].clientX;
     const deltaX = currentX - startX;
+    // console.log('touchend', currentX, 'deltaX:', deltaX);
 
     // Only trigger if swipe is significant (50px threshold)
     if (Math.abs(deltaX) > 50) {
@@ -154,13 +222,10 @@ dots.forEach((dot, index) => {
     });
 });
 
-// Initialize carousel on load (optional, but ensures it's set)
+// Initialize carousel on load
 updateCarousel();
 
 // Power Toggle Logic
-const powerBtn = document.getElementById('powerBtn');
-let powerOn = false;
-
 powerBtn.addEventListener('click', () => {
     powerOn = !powerOn;
     powerBtn.classList.toggle('on', powerOn);
