@@ -230,6 +230,7 @@ const SWIPE_THRESHOLD = 30; // Lowered threshold for easier swipe detection
 // Touch swipe event listeners
 slidesContainer.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
+    currentX = 0; // Reset currentX on new touch start (fix for iPhone swipe stuck)
 }, { passive: true });
 
 slidesContainer.addEventListener('touchmove', (e) => {
@@ -256,7 +257,17 @@ slidesContainer.addEventListener('touchend', (e) => {
         }
         updateCarousel();
     }
+
+    // Reset startX and currentX after swipe ends (fix for iPhone swipe stuck)
+    startX = 0;
+    currentX = 0;
 }, { passive: true });
+
+// Add touchcancel event to reset swipe state (fix for interrupted touches on iPhone)
+slidesContainer.addEventListener('touchcancel', () => {
+    startX = 0;
+    currentX = 0;
+});
 
 // Mouse drag swipe event listeners for desktop
 let isDragging = false;
