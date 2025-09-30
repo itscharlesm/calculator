@@ -242,3 +242,26 @@ body {
         transform: translateX(-100%);
     }
 }
+
+/* View Message Button */
+#viewMessageBtn:hover {
+    background-color: #ff4d94;
+}
+
+/* Reuse existing modal styles for #viewMessageModal */
+#viewMessageModal .modal-content {
+    background-color: #fffafc;
+    border: 2px solid #ff69b4;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+#viewMessageModal .close {
+    color: #ff69b4;
+    float: right;
+    font-size: 1.5em;
+    cursor: pointer;
+}

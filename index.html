@@ -21,6 +21,21 @@
     <!-- Modal Button -->
     <button class="cute-btn" id="hiBtn">📋</button>
     <button class="cute-btn power-btn" id="powerBtn">🔴</button>
+    <button id="viewMessageBtn"
+        style="display:none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background-color: #ff69b4; color: white; border: none; border-radius: 10px; padding: 8px 16px; font-size: 1em; cursor: pointer; z-index: 1000;">
+        View Message
+    </button>
+
+    <!-- View Message Modal -->
+    <div id="viewMessageModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; margin: 20% auto;">
+            <span id="viewMessageClose" class="close">&times;</span>
+            <h2>Full Message</h2>
+            <p id="fullMessageText" style="color: #ff69b4; font-weight: bold; white-space: pre-wrap; text-align: left;">
+            </p>
+        </div>
+    </div>
+
 
     <!-- Modal -->
     <div class="modal" id="hiModal">
@@ -105,7 +120,8 @@
                         <ul style="text-align: left;">
                             <li>Turn on the volume.</li>
                             <li>Toggle the button in the upper-right corner.</li>
-                            <li>Try to add two numbers and multiply with another number(e.g., 17 + 14 * 8), and Hit "="</li>
+                            <li>Try to add two numbers and multiply with another number(e.g., 17 + 14 * 8), and Hit "="
+                            </li>
                             <li>Press "AC" if you want to reset</li>
                         </ul>
                     </div>
@@ -116,7 +132,8 @@
                         <ul style="text-align: left;">
                             <li>Turn on the volume.</li>
                             <li>Toggle the button in the upper-right corner.</li>
-                            <li>Try to subtract two numbers and multiply with another number(e.g., 17 - 14 * 8), and Hit "="</li>
+                            <li>Try to subtract two numbers and multiply with another number(e.g., 17 - 14 * 8), and Hit
+                                "="</li>
                             <li>Press "AC" if you want to reset</li>
                         </ul>
                     </div>

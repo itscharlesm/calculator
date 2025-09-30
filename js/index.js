@@ -2,6 +2,66 @@ const result = document.getElementById('result');
 const powerBtn = document.getElementById('powerBtn');
 let powerOn = false;
 
+// Store current message text globally
+let currentMessageText = '';
+
+// Helper: Remove any previously injected dynamic keyframe style
+function removeDynamicKeyframe() {
+    const oldStyle = document.getElementById('dynamic-slide-left-style');
+    if (oldStyle) {
+        oldStyle.remove();
+    }
+}
+
+// Helper: Create and inject dynamic keyframe animation with pixel values
+function createDynamicSlideLeftAnimation(distance, duration) {
+    removeDynamicKeyframe();
+
+    const style = document.createElement('style');
+    style.id = 'dynamic-slide-left-style';
+
+    // distance is total pixels to move: from containerWidth px to -messageWidth px
+    // So keyframes from translateX(distance px) to translateX(-distance px)
+    // But distance here is total distance = messageWidth + containerWidth
+    // Start at containerWidth px, end at -messageWidth px
+
+    // We'll pass containerWidth and messageWidth separately to build keyframes
+    // So let's split distance into containerWidth and messageWidth
+
+    // We'll pass distance as an object {containerWidth, messageWidth, duration}
+
+    // But since we only have distance and duration here, let's pass containerWidth and messageWidth as params instead
+
+    // So let's change function signature to:
+    // createDynamicSlideLeftAnimation(containerWidth, messageWidth, duration)
+
+    // We'll fix this below
+}
+
+// Updated function with containerWidth and messageWidth params
+function createDynamicSlideLeftAnimation(containerWidth, messageWidth, duration) {
+    removeDynamicKeyframe();
+
+    const style = document.createElement('style');
+    style.id = 'dynamic-slide-left-style';
+
+    // Keyframes: from translateX(containerWidth px) to translateX(-messageWidth px)
+    style.textContent = `
+    @keyframes dynamic-slide-left {
+        0% {
+            transform: translateX(${containerWidth}px);
+        }
+        100% {
+            transform: translateX(${-messageWidth}px);
+        }
+    }
+    `;
+
+    document.head.appendChild(style);
+
+    return 'dynamic-slide-left';
+}
+
 function append(value) {
     result.value += value;
 }
@@ -15,6 +75,9 @@ function clearAll() {
     if (container) {
         container.innerHTML = '';
     }
+
+    // Hide view message button
+    hideViewMessageButton();
 
     // Stop ANY playing audio
     document.querySelectorAll('audio').forEach(audio => {
@@ -44,6 +107,8 @@ function clearOne() {
     // Show message if power is ON
     if (powerOn) {
         showMessage("Good morning my pretty baby iaaah! Bakit may pa ganto? Syempre worth it man ka! Wala lang sad corny man pero wala lang gusto lang ko HAHAHAHA. Start your month with a smile. Basking October na, duol na ang board exam nimo, you have to start your month with a smile jud, to bring positive energy around you. I hope you'll have a fruitful October. I value you just like how I value myself, my fam, and my friends. You matter ha. Ingat ka always!");
+    } else {
+        hideViewMessageButton();
     }
 }
 
@@ -73,6 +138,9 @@ function calculate() {
             msg.textContent = text;
             container.appendChild(msg);
 
+            // Show the view message button
+            showViewMessageButton(text);
+
             requestAnimationFrame(() => {
                 const msgWidth = msg.offsetWidth;
                 const containerWidth = container.offsetWidth;
@@ -80,12 +148,15 @@ function calculate() {
                 const speed = 50;
                 const duration = distance / speed;
 
-                msg.style.animation = `slide-left ${duration}s linear forwards`;
+                // Create dynamic animation with pixel values
+                const animationName = createDynamicSlideLeftAnimation(containerWidth, msgWidth, duration);
+
+                msg.style.animation = `${animationName} ${duration}s linear forwards`;
 
                 msg.addEventListener('animationend', () => {
                     msg.style.animation = 'none';
                     void msg.offsetWidth;
-                    msg.style.animation = `slide-left ${duration}s linear forwards`;
+                    msg.style.animation = `${animationName} ${duration}s linear forwards`;
                 });
             });
 
@@ -132,7 +203,7 @@ function calculate() {
         } else if (powerOn && isAddMultiplyCombo) {
             document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
             animatedMessage(
-                "Don’t be sad na, Iah 💙 Everything will be okay soon. I may not take away your pain, but I’ll always be here for you. Remember, you’re not alone — you’re deeply loved, more than you know.",
+                "Hormones acting up? Or sad ka kay naay nahito? I can be your shoulders to lean on haaa. Normal raman ma sad panagsa and don't worry di taka ijudge if unsa man ang reason sa imong sadness. I know kaya nimo, but my ears are wide open if you need somoene to listen or talk to. Strong ka, pero let me know; but don't worry, kabisado nataka, ma feel dayun nako na if sad ka. So if mag ask ko, hoping you'll open up. Pero di man taka piliton basta naa rako diri for you.",
                 'sadFunctionSound'
             );
             result.value = '';
@@ -146,6 +217,8 @@ function calculate() {
             result.value = '';
 
         } else {
+            // Hide view message button if no special message
+            hideViewMessageButton();
             result.value = computed;
         }
 
@@ -194,7 +267,6 @@ function updateCarousel() {
 // Swipe Event Listeners
 slidesContainer.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
-    // console.log('touchstart', startX);
 });
 
 slidesContainer.addEventListener('touchmove', (e) => {
@@ -213,7 +285,6 @@ slidesContainer.addEventListener('touchend', (e) => {
     if (!e.changedTouches || e.changedTouches.length === 0) return;
     currentX = e.changedTouches[0].clientX;
     const deltaX = currentX - startX;
-    // console.log('touchend', currentX, 'deltaX:', deltaX);
 
     // Only trigger if swipe is significant (50px threshold)
     if (Math.abs(deltaX) > 50) {
@@ -265,6 +336,9 @@ function showMessage(text) {
     msg.textContent = text;
     container.appendChild(msg);
 
+    // Show the view message button
+    showViewMessageButton(text);
+
     // Play Aya sound
     if (audio) {
         audio.currentTime = 0;
@@ -279,14 +353,51 @@ function showMessage(text) {
         const speed = 50; // pixels per second (same as calculate)
         const duration = distance / speed; // seconds
 
-        // Apply dynamic scrolling speed
-        msg.style.animation = `slide-left ${duration}s linear forwards`;
+        // Create dynamic animation with pixel values
+        const animationName = createDynamicSlideLeftAnimation(containerWidth, msgWidth, duration);
+
+        msg.style.animation = `${animationName} ${duration}s linear forwards`;
 
         // Restart animation after it finishes
         msg.addEventListener('animationend', () => {
             msg.style.animation = 'none';
             void msg.offsetWidth; // reflow
-            msg.style.animation = `slide-left ${duration}s linear forwards`;
+            msg.style.animation = `${animationName} ${duration}s linear forwards`;
         });
     });
 }
+
+// Show the "View Message" button with the current message
+function showViewMessageButton(text) {
+    currentMessageText = text;
+    const btn = document.getElementById('viewMessageBtn');
+    btn.style.display = 'block';
+}
+
+// Hide the "View Message" button
+function hideViewMessageButton() {
+    const btn = document.getElementById('viewMessageBtn');
+    btn.style.display = 'none';
+    currentMessageText = '';
+}
+
+// Event listener for "View Message" button
+const viewMessageBtn = document.getElementById('viewMessageBtn');
+const viewMessageModal = document.getElementById('viewMessageModal');
+const fullMessageText = document.getElementById('fullMessageText');
+const viewMessageClose = document.getElementById('viewMessageClose');
+
+viewMessageBtn.addEventListener('click', () => {
+    fullMessageText.textContent = currentMessageText;
+    viewMessageModal.style.display = 'block';
+});
+
+viewMessageClose.addEventListener('click', () => {
+    viewMessageModal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === viewMessageModal) {
+        viewMessageModal.style.display = 'none';
+    }
+});
