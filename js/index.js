@@ -51,9 +51,10 @@ function calculate() {
     try {
         const expression = result.value.trim();
 
-        // Check if it's an addition or subtraction equation
+        // Check if it's an addition, subtraction, or multiplication equation
         const isAddition = /^[\d\s.]+\+[\d\s.]+$/.test(expression);
         const isSubtraction = /^[\d\s.]+-[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
+        const isMultiplication = /^[\d\s.]+\*[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
 
         // Evaluate result first
         const computed = eval(expression) || '';
@@ -96,43 +97,44 @@ function calculate() {
 
         // If power is ON and it's an addition
         if (powerOn && isAddition) {
-            // Stop any playing audio
             document.querySelectorAll('audio').forEach(audio => {
-                if (!audio.paused) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }
+                audio.pause();
+                audio.currentTime = 0;
             });
 
-            // Show animated message + play audio
             animatedMessage(
                 "STRESSED when spelled backward is DESSERTS, stressed diay ka ron? tara let's grab an ice cream or we eat cakes together?",
                 'stressedFunctionSound'
             );
-
-            // Keep result hidden
             result.value = '';
 
             // If power is ON and it's a subtraction
         } else if (powerOn && isSubtraction) {
-            // Stop any playing audio
             document.querySelectorAll('audio').forEach(audio => {
-                if (!audio.paused) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }
+                audio.pause();
+                audio.currentTime = 0;
             });
 
-            // Show animated message + play audio
             animatedMessage(
                 "Need a fresh air? Tara iaaah, jog taaa? Or if di ka gusto ug sington ka or kapuyan ka, we can go outside pahangin ta sakay ka saako kay nagi, dalhon taka duol sa nature, and don't worry safe ka with me.",
                 'overwhelmedFunctionSound'
             );
-
-            // Keep result hidden
             result.value = '';
-        }
-        else {
+
+            // If power is ON and it's a multiplication
+        } else if (powerOn && isMultiplication) {
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+
+            animatedMessage(
+                "I know it's getting tougher and tougher each day. All the pressures are sinking in, but just know I believed in you. You're really a hardworking person and I know you can it. If kaya sa uban, I know mas kaya nimo. All of your prayers and even those persons who prayed for you will be answered. Trust yourself lng jd, smart man ka iah. Naay times mu ingon kag 'chamba lang', but there's no such thing as 'chamba'. Tungod na saimong hardwork and intelligence. Ayaw lng give up saimong goal. Kaya na nimo, ikaw pa! Ikaw nagud na!",
+                'encouragementFunctionSound'
+            );
+            result.value = '';
+
+        } else {
             // Normal calculation behavior
             result.value = computed;
         }
