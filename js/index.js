@@ -223,10 +223,12 @@ const totalSlides = slides.length;
 let startX = 0;
 let currentX = 0;
 
+const SWIPE_THRESHOLD = 30; // Lowered threshold for easier swipe detection
+
 // Touch swipe event listeners
 slidesContainer.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
-});
+}, { passive: true });
 
 slidesContainer.addEventListener('touchmove', (e) => {
     if (!e.touches || e.touches.length === 0) return;
@@ -235,16 +237,16 @@ slidesContainer.addEventListener('touchmove', (e) => {
     const deltaX = touch.clientX - startX;
 
     if (Math.abs(deltaX) > 10) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent scrolling when swiping horizontally
     }
-});
+}, { passive: false });
 
 slidesContainer.addEventListener('touchend', (e) => {
     if (!e.changedTouches || e.changedTouches.length === 0) return;
     currentX = e.changedTouches[0].clientX;
     const deltaX = currentX - startX;
 
-    if (Math.abs(deltaX) > 50) {
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
         if (deltaX > 0 && currentIndex > 0) {
             currentIndex--;
         } else if (deltaX < 0 && currentIndex < totalSlides - 1) {
@@ -252,7 +254,7 @@ slidesContainer.addEventListener('touchend', (e) => {
         }
         updateCarousel();
     }
-});
+}, { passive: true });
 
 // Mouse drag swipe event listeners for desktop
 let isDragging = false;
@@ -280,7 +282,7 @@ slidesContainer.addEventListener('mouseup', (e) => {
     dragCurrentX = e.clientX;
     const deltaX = dragCurrentX - dragStartX;
 
-    if (Math.abs(deltaX) > 50) {
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
         if (deltaX > 0 && currentIndex > 0) {
             currentIndex--;
         } else if (deltaX < 0 && currentIndex < totalSlides - 1) {
