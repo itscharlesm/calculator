@@ -14,31 +14,6 @@ function removeDynamicKeyframe() {
 }
 
 // Helper: Create and inject dynamic keyframe animation with pixel values
-function createDynamicSlideLeftAnimation(distance, duration) {
-    removeDynamicKeyframe();
-
-    const style = document.createElement('style');
-    style.id = 'dynamic-slide-left-style';
-
-    // distance is total pixels to move: from containerWidth px to -messageWidth px
-    // So keyframes from translateX(distance px) to translateX(-distance px)
-    // But distance here is total distance = messageWidth + containerWidth
-    // Start at containerWidth px, end at -messageWidth px
-
-    // We'll pass containerWidth and messageWidth separately to build keyframes
-    // So let's split distance into containerWidth and messageWidth
-
-    // We'll pass distance as an object {containerWidth, messageWidth, duration}
-
-    // But since we only have distance and duration here, let's pass containerWidth and messageWidth as params instead
-
-    // So let's change function signature to:
-    // createDynamicSlideLeftAnimation(containerWidth, messageWidth, duration)
-
-    // We'll fix this below
-}
-
-// Updated function with containerWidth and messageWidth params
 function createDynamicSlideLeftAnimation(containerWidth, messageWidth, duration) {
     removeDynamicKeyframe();
 
@@ -248,23 +223,7 @@ const totalSlides = slides.length;
 let startX = 0;
 let currentX = 0;
 
-// Function to update carousel position and active states
-function updateCarousel() {
-    const translateX = - (currentIndex * 100);
-    slidesContainer.style.transform = `translateX(${translateX}%)`;
-
-    // Update active dot
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentIndex);
-    });
-
-    // Update active slide class for styling
-    slides.forEach((slide, index) => {
-        slide.classList.toggle('active', index === currentIndex);
-    });
-}
-
-// Swipe Event Listeners
+// Touch swipe event listeners
 slidesContainer.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
 });
@@ -275,7 +234,6 @@ slidesContainer.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
     const deltaX = touch.clientX - startX;
 
-    // Only prevent default if horizontal swipe is significant
     if (Math.abs(deltaX) > 10) {
         e.preventDefault();
     }
@@ -286,16 +244,71 @@ slidesContainer.addEventListener('touchend', (e) => {
     currentX = e.changedTouches[0].clientX;
     const deltaX = currentX - startX;
 
-    // Only trigger if swipe is significant (50px threshold)
     if (Math.abs(deltaX) > 50) {
-        if (deltaX > 0 && currentIndex > 0) { // Swipe right: Go to previous slide
+        if (deltaX > 0 && currentIndex > 0) {
             currentIndex--;
-        } else if (deltaX < 0 && currentIndex < totalSlides - 1) { // Swipe left: Go to next slide
+        } else if (deltaX < 0 && currentIndex < totalSlides - 1) {
             currentIndex++;
         }
         updateCarousel();
     }
 });
+
+// Mouse drag swipe event listeners for desktop
+let isDragging = false;
+let dragStartX = 0;
+let dragCurrentX = 0;
+
+slidesContainer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    dragStartX = e.clientX;
+});
+
+slidesContainer.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    dragCurrentX = e.clientX;
+    const deltaX = dragCurrentX - dragStartX;
+
+    if (Math.abs(deltaX) > 10) {
+        e.preventDefault();
+    }
+});
+
+slidesContainer.addEventListener('mouseup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    dragCurrentX = e.clientX;
+    const deltaX = dragCurrentX - dragStartX;
+
+    if (Math.abs(deltaX) > 50) {
+        if (deltaX > 0 && currentIndex > 0) {
+            currentIndex--;
+        } else if (deltaX < 0 && currentIndex < totalSlides - 1) {
+            currentIndex++;
+        }
+        updateCarousel();
+    }
+});
+
+slidesContainer.addEventListener('mouseleave', (e) => {
+    if (isDragging) {
+        isDragging = false;
+    }
+});
+
+// Function to update carousel position and active states
+function updateCarousel() {
+    const translateX = - (currentIndex * 100);
+    slidesContainer.style.transform = `translateX(${translateX}%)`;
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+    });
+
+    slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentIndex);
+    });
+}
 
 // Dots Click Listeners
 dots.forEach((dot, index) => {
