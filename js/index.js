@@ -223,25 +223,22 @@ const dots = document.querySelectorAll('.dot');
 const totalSlides = slides.length;
 
 let startX = 0;
-let currentX = 0;
+let startY = 0;
 
-const SWIPE_THRESHOLD = 30; // Lowered threshold for easier swipe detection
-
-// Touch swipe event listeners
 slidesContainer.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    currentX = 0; // Reset currentX on new touch start (fix for iPhone swipe stuck)
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
 }, { passive: true });
 
 slidesContainer.addEventListener('touchmove', (e) => {
-    if (!e.touches || e.touches.length === 0) return;
+  if (!e.touches || e.touches.length === 0) return;
+  const touch = e.touches[0];
+  const deltaX = touch.clientX - startX;
+  const deltaY = touch.clientY - startY;
 
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - startX;
-
-    if (Math.abs(deltaX) > 10) {
-        e.preventDefault(); // Prevent scrolling when swiping horizontally
-    }
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    e.preventDefault(); // Only prevent vertical scroll if horizontal swipe
+  }
 }, { passive: false });
 
 slidesContainer.addEventListener('touchend', (e) => {
@@ -257,17 +254,7 @@ slidesContainer.addEventListener('touchend', (e) => {
         }
         updateCarousel();
     }
-
-    // Reset startX and currentX after swipe ends (fix for iPhone swipe stuck)
-    startX = 0;
-    currentX = 0;
 }, { passive: true });
-
-// Add touchcancel event to reset swipe state (fix for interrupted touches on iPhone)
-slidesContainer.addEventListener('touchcancel', () => {
-    startX = 0;
-    currentX = 0;
-});
 
 // Mouse drag swipe event listeners for desktop
 let isDragging = false;
@@ -285,7 +272,7 @@ slidesContainer.addEventListener('mousemove', (e) => {
     const deltaX = dragCurrentX - dragStartX;
 
     if (Math.abs(deltaX) > 10) {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
     }
 });
 
@@ -313,16 +300,16 @@ slidesContainer.addEventListener('mouseleave', (e) => {
 
 // Function to update carousel position and active states
 function updateCarousel() {
-    const translateX = - (currentIndex * 100);
-    slidesContainer.style.transform = `translateX(${translateX}%)`;
+  const translateX = - (currentIndex * 100);
+  slidesContainer.style.transform = `translateX(${translateX}%)`;
+  void slidesContainer.offsetWidth; // force reflow
 
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentIndex);
-    });
-
-    slides.forEach((slide, index) => {
-        slide.classList.toggle('active', index === currentIndex);
-    });
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentIndex);
+  });
+  slides.forEach((slide, index) => {
+    slide.classList.toggle('active', index === currentIndex);
+  });
 }
 
 // Dots Click Listeners
