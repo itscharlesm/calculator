@@ -43,7 +43,7 @@ function clearOne() {
 
     // Show message if power is ON
     if (powerOn) {
-        showMessage("Good morning my Iah! How are you? I hope you're doing well 💖");
+        showMessage("Good morning my pretty baby iaaah! Bakit may pa ganto? Syempre worth it man ka! Wala lang sad corny man pero wala lang gusto lang ko HAHAHAHA. Start your month with a smile. Basking October na, duol na ang board exam nimo, you have to start your month with a smile jud, to bring positive energy around you. I hope you'll have a fruitful October. I value you just like how I value myself, my fam, and my friends. You matter ha. Ingat ka always!");
     }
 }
 
@@ -51,16 +51,20 @@ function calculate() {
     try {
         const expression = result.value.trim();
 
-        // Check if it's an addition, subtraction, multiplication, or division equation
+        // Check equation types
         const isAddition = /^[\d\s.]+\+[\d\s.]+$/.test(expression);
         const isSubtraction = /^[\d\s.]+-[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
         const isMultiplication = /^[\d\s.]+\*[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
         const isDivision = /^[\d\s.]+\/[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
 
-        // Evaluate result first
+        // Detect combos
+        const isAddMultiplyCombo = expression.includes('+') && expression.includes('*');
+        const isSubtractMultiplyCombo = expression.includes('-') && expression.includes('*');
+
+        // Evaluate first
         const computed = eval(expression) || '';
 
-        // Helper: plays message with animation + optional sound
+        // Helper: message + sound
         function animatedMessage(text, audioId) {
             const container = document.getElementById('messageContainer');
             container.innerHTML = '';
@@ -69,12 +73,11 @@ function calculate() {
             msg.textContent = text;
             container.appendChild(msg);
 
-            // Wait for the element to be rendered to get accurate width
             requestAnimationFrame(() => {
                 const msgWidth = msg.offsetWidth;
                 const containerWidth = container.offsetWidth;
                 const distance = msgWidth + containerWidth;
-                const speed = 50; // pixels per second
+                const speed = 50;
                 const duration = distance / speed;
 
                 msg.style.animation = `slide-left ${duration}s linear forwards`;
@@ -86,7 +89,6 @@ function calculate() {
                 });
             });
 
-            // Play the sound
             const audio = document.getElementById(audioId);
             if (audio) {
                 audio.currentTime = 0;
@@ -96,9 +98,7 @@ function calculate() {
 
         // --- Special Reactions ---
         if (powerOn && isAddition) {
-            document.querySelectorAll('audio').forEach(audio => {
-                audio.pause(); audio.currentTime = 0;
-            });
+            document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
             animatedMessage(
                 "STRESSED when spelled backward is DESSERTS, stressed diay ka ron? tara let's grab an ice cream or we eat cakes together?",
                 'stressedFunctionSound'
@@ -106,9 +106,7 @@ function calculate() {
             result.value = '';
 
         } else if (powerOn && isSubtraction) {
-            document.querySelectorAll('audio').forEach(audio => {
-                audio.pause(); audio.currentTime = 0;
-            });
+            document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
             animatedMessage(
                 "Need a fresh air? Tara iaaah, jog taaa? Or if di ka gusto ug sington ka or kapuyan ka, we can go outside pahangin ta sakay ka saako kay nagi, dalhon taka duol sa nature, and don't worry safe ka with me.",
                 'overwhelmedFunctionSound'
@@ -116,9 +114,7 @@ function calculate() {
             result.value = '';
 
         } else if (powerOn && isMultiplication) {
-            document.querySelectorAll('audio').forEach(audio => {
-                audio.pause(); audio.currentTime = 0;
-            });
+            document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
             animatedMessage(
                 "I know it's getting tougher and tougher each day. All the pressures are sinking in, but just know I believed in you. You're really a hardworking person and I know you can do it. If kaya sa uban, I know mas kaya nimo. All of your prayers and even those persons who prayed for you will be answered. Trust yourself lng jd, smart man ka iah. Naay times mu ingon kag 'chamba lang', but there's no such thing as 'chamba'. Tungod na saimong hardwork and intelligence. Ayaw lng give up saimong goal. Kaya na nimo, ikaw pa! Ikaw nagud na!",
                 'encouragementFunctionSound'
@@ -126,17 +122,30 @@ function calculate() {
             result.value = '';
 
         } else if (powerOn && isDivision) {
-            document.querySelectorAll('audio').forEach(audio => {
-                audio.pause(); audio.currentTime = 0;
-            });
+            document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
             animatedMessage(
                 "Awhhh... Whyyy? Dili ko nimo gina tuohan pero tinuod baya jd na akong mga compliments. Mu ingon ka na tanga kaayo ka sa mga picture tapos gusto ka idelete nako pero behind those pictures there's no such thing na tanga, pangit, or a bad photo. Kay basking kinsa pa na lalake ipakita to, maka admire jd sila saimong beauty. Just like how I admire you. You're stunning, you're gorgeous, you're blooming, you're pretty, you're every beautiful words I can think off. I love just the way you are. So smile na, cause your smile is really priceless.",
                 'insecureFunctionSound'
             );
             result.value = '';
 
+        } else if (powerOn && isAddMultiplyCombo) {
+            document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
+            animatedMessage(
+                "Don’t be sad na, Iah 💙 Everything will be okay soon. I may not take away your pain, but I’ll always be here for you. Remember, you’re not alone — you’re deeply loved, more than you know.",
+                'sadFunctionSound'
+            );
+            result.value = '';
+
+        } else if (powerOn && isSubtractMultiplyCombo) {
+            document.querySelectorAll('audio').forEach(audio => { audio.pause(); audio.currentTime = 0; });
+            animatedMessage(
+                "How can I help? Do you want me to listen or do you want solutions? Just know that I'm here for you ha?",
+                'problemFunctionSound'
+            );
+            result.value = '';
+
         } else {
-            // Normal calculation behavior
             result.value = computed;
         }
 
@@ -248,24 +257,36 @@ function showMessage(text) {
     const container = document.getElementById('messageContainer');
     const audio = document.getElementById('mainFunctionSound');
 
-    container.innerHTML = ''; // clear any previous message
+    // Clear any previous message
+    container.innerHTML = '';
 
+    // Create new message
     const msg = document.createElement('span');
     msg.textContent = text;
     container.appendChild(msg);
 
     // Play Aya sound
     if (audio) {
-        audio.currentTime = 0; // restart from beginning
-        audio.play().catch(err => {
-            console.log("Audio playback failed:", err);
-        });
+        audio.currentTime = 0;
+        audio.play().catch(err => console.log("Audio playback failed:", err));
     }
 
-    // Restart animation on loop
-    msg.addEventListener('animationend', () => {
-        msg.style.animation = 'none';
-        void msg.offsetWidth; // reflow to restart
-        msg.style.animation = 'slide-left 10s linear forwards';
+    // Wait until rendered to compute correct width
+    requestAnimationFrame(() => {
+        const msgWidth = msg.offsetWidth;
+        const containerWidth = container.offsetWidth;
+        const distance = msgWidth + containerWidth;
+        const speed = 50; // pixels per second (same as calculate)
+        const duration = distance / speed; // seconds
+
+        // Apply dynamic scrolling speed
+        msg.style.animation = `slide-left ${duration}s linear forwards`;
+
+        // Restart animation after it finishes
+        msg.addEventListener('animationend', () => {
+            msg.style.animation = 'none';
+            void msg.offsetWidth; // reflow
+            msg.style.animation = `slide-left ${duration}s linear forwards`;
+        });
     });
 }
