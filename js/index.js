@@ -205,13 +205,15 @@ function calculate() {
 // Modal Logic (Open/Close)
 const modal = document.getElementById('hiModal');
 const btn = document.getElementById('hiBtn');
-const span = document.querySelector('.close');
+const hiModalClose = document.getElementById('hiModalClose');
 
-btn.onclick = () => modal.style.display = 'block';
-span.onclick = () => modal.style.display = 'none';
-window.onclick = (event) => {
+btn.addEventListener('click', () => modal.style.display = 'block');
+hiModalClose.addEventListener('click', () => modal.style.display = 'none');
+
+window.addEventListener('click', (event) => {
     if (event.target === modal) modal.style.display = 'none';
-};
+});
+
 
 // Carousel Logic (New: Swipes and Dots)
 let currentIndex = 1;
