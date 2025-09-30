@@ -51,10 +51,11 @@ function calculate() {
     try {
         const expression = result.value.trim();
 
-        // Check if it's an addition, subtraction, or multiplication equation
+        // Check if it's an addition, subtraction, multiplication, or division equation
         const isAddition = /^[\d\s.]+\+[\d\s.]+$/.test(expression);
         const isSubtraction = /^[\d\s.]+-[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
         const isMultiplication = /^[\d\s.]+\*[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
+        const isDivision = /^[\d\s.]+\/[\d\s.]+$/.test(expression.replace(/\s+/g, ''));
 
         // Evaluate result first
         const computed = eval(expression) || '';
@@ -73,16 +74,14 @@ function calculate() {
                 const msgWidth = msg.offsetWidth;
                 const containerWidth = container.offsetWidth;
                 const distance = msgWidth + containerWidth;
-
-                const speed = 50; // pixels per second, adjust as needed
-                const duration = distance / speed; // seconds
+                const speed = 50; // pixels per second
+                const duration = distance / speed;
 
                 msg.style.animation = `slide-left ${duration}s linear forwards`;
 
-                // Restart animation on end
                 msg.addEventListener('animationend', () => {
                     msg.style.animation = 'none';
-                    void msg.offsetWidth; // trigger reflow
+                    void msg.offsetWidth;
                     msg.style.animation = `slide-left ${duration}s linear forwards`;
                 });
             });
@@ -95,42 +94,44 @@ function calculate() {
             }
         }
 
-        // If power is ON and it's an addition
+        // --- Special Reactions ---
         if (powerOn && isAddition) {
             document.querySelectorAll('audio').forEach(audio => {
-                audio.pause();
-                audio.currentTime = 0;
+                audio.pause(); audio.currentTime = 0;
             });
-
             animatedMessage(
                 "STRESSED when spelled backward is DESSERTS, stressed diay ka ron? tara let's grab an ice cream or we eat cakes together?",
                 'stressedFunctionSound'
             );
             result.value = '';
 
-            // If power is ON and it's a subtraction
         } else if (powerOn && isSubtraction) {
             document.querySelectorAll('audio').forEach(audio => {
-                audio.pause();
-                audio.currentTime = 0;
+                audio.pause(); audio.currentTime = 0;
             });
-
             animatedMessage(
                 "Need a fresh air? Tara iaaah, jog taaa? Or if di ka gusto ug sington ka or kapuyan ka, we can go outside pahangin ta sakay ka saako kay nagi, dalhon taka duol sa nature, and don't worry safe ka with me.",
                 'overwhelmedFunctionSound'
             );
             result.value = '';
 
-            // If power is ON and it's a multiplication
         } else if (powerOn && isMultiplication) {
             document.querySelectorAll('audio').forEach(audio => {
-                audio.pause();
-                audio.currentTime = 0;
+                audio.pause(); audio.currentTime = 0;
             });
-
             animatedMessage(
-                "I know it's getting tougher and tougher each day. All the pressures are sinking in, but just know I believed in you. You're really a hardworking person and I know you can it. If kaya sa uban, I know mas kaya nimo. All of your prayers and even those persons who prayed for you will be answered. Trust yourself lng jd, smart man ka iah. Naay times mu ingon kag 'chamba lang', but there's no such thing as 'chamba'. Tungod na saimong hardwork and intelligence. Ayaw lng give up saimong goal. Kaya na nimo, ikaw pa! Ikaw nagud na!",
+                "I know it's getting tougher and tougher each day. All the pressures are sinking in, but just know I believed in you. You're really a hardworking person and I know you can do it. If kaya sa uban, I know mas kaya nimo. All of your prayers and even those persons who prayed for you will be answered. Trust yourself lng jd, smart man ka iah. Naay times mu ingon kag 'chamba lang', but there's no such thing as 'chamba'. Tungod na saimong hardwork and intelligence. Ayaw lng give up saimong goal. Kaya na nimo, ikaw pa! Ikaw nagud na!",
                 'encouragementFunctionSound'
+            );
+            result.value = '';
+
+        } else if (powerOn && isDivision) {
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.pause(); audio.currentTime = 0;
+            });
+            animatedMessage(
+                "Awhhh... Whyyy? Dili ko nimo gina tuohan pero tinuod baya jd na akong mga compliments. Mu ingon ka na tanga kaayo ka sa mga picture tapos gusto ka idelete nako pero behind those pictures there's no such thing na tanga, pangit, or a bad photo. Kay basking kinsa pa na lalake ipakita to, maka admire jd sila saimong beauty. Just like how I admire you. You're stunning, you're gorgeous, you're blooming, you're pretty, you're every beautiful words I can think off. I love just the way you are. So smile na, cause your smile is really priceless.",
+                'insecureFunctionSound'
             );
             result.value = '';
 
