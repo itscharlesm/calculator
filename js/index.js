@@ -239,7 +239,7 @@ slidesContainer.addEventListener('touchmove', (e) => {
     const deltaX = touch.clientX - startX;
 
     if (Math.abs(deltaX) > 10) {
-        e.preventDefault(); // Prevent scrolling when swiping horizontally
+        if (e.cancelable) e.preventDefault();
     }
 }, { passive: false });
 
@@ -274,7 +274,7 @@ slidesContainer.addEventListener('mousemove', (e) => {
     const deltaX = dragCurrentX - dragStartX;
 
     if (Math.abs(deltaX) > 10) {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
     }
 });
 
